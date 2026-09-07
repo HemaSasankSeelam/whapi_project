@@ -1,0 +1,9 @@
+map:
+  - folder-name: father
+    has-current-image: false
+  - folder-name: client
+    has-current-image: true
+  - folder-name: sister
+    has-current-image: false
+  - folder-name: mother
+    has-current-image: false

@@ -1,0 +1,49 @@
+name: WhatsApp DP Monitor
+
+on:
+  schedule:
+    - cron: "0 */4 * * *"
+
+  workflow_dispatch:
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run WhatsApp bot
+        env:
+          CLIENT_NUMBER: ${{ secrets.CLIENT_NUMBER }}
+          FATHER_NUMBER: ${{ secrets.FATHER_NUMBER }}
+          MOTHER_NUMBER: ${{ secrets.MOTHER_NUMBER }}
+          SISTER_NUMBER: ${{ secrets.SISTER_NUMBER }}
+          WHAPI_TOKEN: ${{ secrets.WHAPI_TOKEN }}
+          MY_NUMBER: ${{ secrets.MY_NUMBER }}
+
+          CLOUDE_FARE_ACCOUNT_ID: ${{ secrets.CLOUDE_FARE_ACCOUNT_ID }}
+          CLOUDE_FARE_ACCESS_KEY_ID: ${{ secrets.CLOUDE_FARE_ACCESS_KEY_ID }}
+          CLOUDE_FARE_SECRET_ACCESS_KEY: ${{ secrets.CLOUDE_FARE_SECRET_ACCESS_KEY }}
+          CLOUDE_FARE_BUCKET_NAME: ${{ secrets.CLOUDE_FARE_BUCKET_NAME }}
+
+          TOKEN_GITHUB: ${{ secrets.TOKEN_GITHUB }}
+          USERNAME_GITHUB: ${{ secrets.USERNAME_GITHUB }}
+          REPO_NAME_GITHUB: ${{ secrets.REPO_NAME_GITHUB }}
+
+        run: |
+          python main.py
