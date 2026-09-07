@@ -42,7 +42,9 @@ class WhatsappBOT:
 
         # download the config file from github to check the created folders (or) configaration
 
-        url = f"https://raw.githubusercontent.com/{self.__github_username}/{self.__github_repo_name}/main/config.yaml"
+        branch = "main"
+
+        url = f"https://raw.githubusercontent.com/{self.__github_username}/{self.__github_repo_name}/{branch}/config.yaml"
 
         github_file_actions.download_file_from_github(github_token=self.__github_token,
                                                       url=url,
