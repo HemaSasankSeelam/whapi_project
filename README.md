@@ -17,17 +17,21 @@
 ### new mobile number addition
 - if you want to check the new mobile number dp
 - create a key, value pair in `.env` file
-- then update your code like below 
-
-``` python
-self.__mother_number = os.getenv("MOTHER_NUMBER", "").strip() # load new mobile number
-
-self.__folder_dict = {
-    self.__client_number:"client", # already available
-
-    self.__mother_number:"mother" # folder name that will be created in server
-}
-```
+- then update your code like below (main.py)
+  ``` python
+  self.__mother_number = os.getenv("MOTHER_NUMBER", "").strip() # load new mobile number
+  
+  self.__folder_dict = {
+      self.__client_number:"client", # already available
+  
+      self.__mother_number:"mother" # folder name that will be created in server
+  }
+  ```
 
 - add the same `.env` variables into github secrets
 - update the github workflow yaml file
+  ``` yaml
+  env: 
+      CLIENT_NUMBER: ${{ secrets.CLIENT_NUMBER }} # already avilable
+      MOTHER_NUMBER: ${{ secrets.MOTHER_NUMBER }} # mother number fetch from secrets
+  ```
