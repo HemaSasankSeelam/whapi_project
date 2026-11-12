@@ -1,5 +1,5 @@
 import requests, yaml
-import os, shutil
+import os, shutil, time
 from datetime import datetime, timezone
 
 #local modules
@@ -33,6 +33,7 @@ class WhatsappBOT:
         }
 
         self.__numbers_list = self.__folder_dict.keys()
+        self.__error_numbers = []
 
         self.download_config_file_from_github()
 
@@ -112,7 +113,12 @@ class WhatsappBOT:
             "authorization": f"Bearer {self.__token}"
         }
 
-        response = requests.get(url, headers=headers)
+        try:
+            response = requests.get(url, headers=headers)
+            time.sleep(0.7) # adding small delay 0.7 seconds
+            response.raise_for_status()
+        except Exception as e:
+            return "error" 
 
         dp_url = response.json()["icon_full"]
 
@@ -193,13 +199,13 @@ class WhatsappBOT:
 
         return True
 
-    def __send_message(self, folder_name) -> bool:
+    def __send_message(self, folder_name:str, mess:str|None) -> bool:
 
         # if you have any new dp we will send the message to whatsapp
 
         url = "https://gate.whapi.cloud/messages/text"
 
-        message = f"we have a new dp for the {folder_name} profile"
+        message = f"we have a new dp for the {folder_name} profile" if not mess else mess
         payload = {
             "typing_time": 0,
             "to": self.__receiver_number,
@@ -218,8 +224,19 @@ class WhatsappBOT:
     def loop(self):
 
         for number in self.__numbers_list:
-            self.__download_dp(number)
-        
+            if self.__download_dp(number) == "error":
+                self.__error_numbers.append(number)
+
+        new_whatsapp_message = "we have an erros for the "
+        for number in self.__error_numbers:
+            if self.__download_dp(number) == "error":
+                new_whatsapp_message += f"{self.__folder_dict.get(number)}, "
+
+        if self.__error_numbers:
+            mess = new_whatsapp_message.removesuffix(", ") + "."
+            self.__send_message(folder_name="",
+                                mess=mess)
+                
         with open("./config.yaml", "r") as fo:
             data1 = yaml.safe_load(fo)
 
